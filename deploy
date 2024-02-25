@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -e
+
+# Load Configuration
+if [ ! -f environments/$1.sh ]; then
+    echo "Missing configuration file: environments/$1.sh"
+    exit 1
+fi
+source environments/$1.sh
+
+if [ -z "$theMigrationsDir" ]; then
+    echo "theMigrationsDir is not specified"
+    exit 1
+fi
+if [ -z "$theDatabaseName" ]; then
+    echo "theDatabaseName is not specified"
+    exit 1
+fi
+if [ -z "$theDatabaseUser" ]; then
+    echo "theDatabaseUser is not specified"
+    exit 1
+fi
+if [ -z "$theDatabasePassword" ]; then
+    echo "theDatabasePassword is not specified"
+    exit 1
+fi
+if [ -z "$theHost" ]; then
+    echo "theHost is not specified"
+    exit 1
+fi
+if [ -z "$thePort" ]; then
+    echo "thePort is not specified"
+    exit 1
+fi
+
+
+mFlywayDockerImage=flyway/flyway:10.4.1
+
+docker run --rm \
+    -v $(pwd)/${theMigrationsDir}:/flyway/sql \
+    -e FLYWAY_URL=jdbc:postgresql://${theHost}:${thePort}/${theDatabaseName} \
+    -e FLYWAY_USER=${theDatabaseUser} \
+    -e FLYWAY_PASSWORD=${theDatabasePassword} \
+    ${mFlywayDockerImage} migrate -locations=filesystem:/flyway/sql

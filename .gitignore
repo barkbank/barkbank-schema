@@ -1,0 +1,4 @@
+/out/
+/tmp/
+/environments/*
+!/environments/example.sh
