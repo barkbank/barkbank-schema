@@ -49,4 +49,4 @@ That said **if the migrations have not been merged to main**, we can attempt to 
 
 1. Write a configuration file in `environments/`.
     - For example `environemnts/example.sh` defines configuration for the `example` environment.
-2. Execute `./deploy <env>` — E.g. `./deploy example`.
+2. Run `make target=<env> deploy`

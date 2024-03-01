@@ -2,12 +2,13 @@
 
 set -e
 
-# Load Configuration
-if [ ! -f environments/$1.sh ]; then
-    echo "Missing configuration file: environments/$1.sh"
+# Load Configuration File
+mConfigFile=$1
+if [ ! -f $mConfigFile ]; then
+    echo "Missing configuration file: $mConfigFile"
     exit 1
 fi
-source environments/$1.sh
+source $mConfigFile
 
 if [ -z "$theMigrationsDir" ]; then
     echo "theMigrationsDir is not specified"
