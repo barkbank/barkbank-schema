@@ -14,12 +14,16 @@ test:
 keep:
 	bash scripts/test.sh keep
 
-# This starts a dev database, if not already started, and runs the latest
-# migrations against that database. The operation is idempotent. (It will run
-# `make test` first.)
-.PHONY: dev
-dev: test
-	bash scripts/dev.sh
+# This starts a local development database, if not already started,
+# and runs the latest migrations against that database. The operation
+# is idempotent. (It will run `make test` first.)
+.PHONY: local
+local: test
+	bash scripts/local.sh
+
+.PHONY: deploy
+deploy: test
+	bash scripts/deploy.sh environments/$(target).sh
 
 # This removes the out/ directory.
 .PHONY: clean
