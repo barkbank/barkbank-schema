@@ -40,10 +40,11 @@ CREATE TABLE dogs (
   user_id BIGINT NOT NULL,
   dog_encrypted_oii TEXT NOT NULL,
   dog_breed TEXT NOT NULL,
-  dog_birth_month TEXT NOT NULL, -- YYYY-MM format MM=00 means month is unknown
   dog_gender t_dog_gender NOT NULL,
   dog_dea1_point1 t_dog_antigen_presence NOT NULL,
   dog_modification_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dog_birthday TEXT NOT NULL, -- YYYY-MM-DD format, 00 for absent DD and/or MM
+  CONSTRAINT dog_birthday_fmt CHECK (dog_birthday ~ '^\d{4}-\d{2}-\d{2}$'),
   CONSTRAINT dogs_fk_users FOREIGN KEY (user_id) REFERENCES users (user_id),
   CONSTRAINT dogs_pk PRIMARY KEY (dog_id)
 );
