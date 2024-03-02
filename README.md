@@ -20,12 +20,12 @@ This repository contains migration scripts for the Bark Bank Database.
 
 ### How to run a dev database for local Pawtal
 
-1. `make dev`
+1. `make local`
 2. Note the connection details at the end of the run.
 
 ### How to apply migrations to the dev database for local Pawtal
 
-1. `make dev`
+1. `make local`
 
 ### How to rollback migrations for local Pawtal
 
@@ -41,7 +41,7 @@ However that sounds like more work. Fixing Forward is safer.
 That said **if the migrations have not been merged to main**, we can attempt to clean it up. So for migrations not already in main we can do it this way:
 
 1. Add migrations to reverse the error. E.g. if a column was added, then drop the column. Do revert errors in the reference schema also. Verify using `make test`.
-2. Run `make dev` to apply the migrations.
+2. Run `make local` to apply the migrations.
 3. At this point, the database should have the same schema as before the error. So we can delete the unnecessary migrations and run `make test` to verify.
 4. Finally, connect to the database and delete the unnecessary rows from the `flyway_schema_history` table. They should have in the `script` column the names of the migration files deleted in the previous step.
 
