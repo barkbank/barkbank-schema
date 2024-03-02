@@ -1,26 +1,3 @@
-CREATE TABLE users (
-  user_id BIGSERIAL,
-  user_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  user_hashed_email TEXT NOT NULL,
-  user_encrypted_pii TEXT NOT NULL,
-  user_modification_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT users_unique_user_hashed_email UNIQUE (user_hashed_email),
-  CONSTRAINT users_pk PRIMARY KEY (user_id)
-);
-
-CREATE FUNCTION update_user_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.user_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_user_modification_time_trigger
-BEFORE UPDATE ON users
-FOR EACH ROW EXECUTE FUNCTION update_user_modification_time();
-
-
 CREATE TABLE admins (
   admin_id BIGSERIAL,
   admin_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -30,19 +7,6 @@ CREATE TABLE admins (
   CONSTRAINT admins_unique_admin_hashed_email UNIQUE (admin_hashed_email),
   CONSTRAINT admins_pk PRIMARY KEY (admin_id)
 );
-
-CREATE FUNCTION update_admin_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.admin_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_admin_modification_time_trigger
-BEFORE UPDATE ON admins
-FOR EACH ROW EXECUTE FUNCTION update_admin_modification_time();
-
 
 CREATE TABLE vets (
   vet_id BIGSERIAL,
@@ -56,18 +20,15 @@ CREATE TABLE vets (
   CONSTRAINT vet_pk PRIMARY KEY (vet_id)
 );
 
-CREATE FUNCTION update_vet_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.vet_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_vet_modification_time_trigger
-BEFORE UPDATE ON vets
-FOR EACH ROW EXECUTE FUNCTION update_vet_modification_time();
-
+CREATE TABLE users (
+  user_id BIGSERIAL,
+  user_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_hashed_email TEXT NOT NULL,
+  user_encrypted_pii TEXT NOT NULL,
+  user_modification_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT users_unique_user_hashed_email UNIQUE (user_hashed_email),
+  CONSTRAINT users_pk PRIMARY KEY (user_id)
+);
 
 CREATE TYPE t_dog_gender AS ENUM ('MALE', 'FEMALE', 'UNKNOWN');
 CREATE TYPE t_dog_antigen_presence AS ENUM ('POSITIVE', 'NEGATIVE', 'UNKNOWN');
@@ -86,6 +47,46 @@ CREATE TABLE dogs (
   CONSTRAINT dogs_fk_users FOREIGN KEY (user_id) REFERENCES users (user_id),
   CONSTRAINT dogs_pk PRIMARY KEY (dog_id)
 );
+
+
+-- ------------------------------------------------------------
+-- # Triggers
+
+CREATE FUNCTION update_admin_modification_time()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.admin_modification_time = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_admin_modification_time_trigger
+BEFORE UPDATE ON admins
+FOR EACH ROW EXECUTE FUNCTION update_admin_modification_time();
+
+CREATE FUNCTION update_user_modification_time()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.user_modification_time = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_user_modification_time_trigger
+BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_user_modification_time();
+
+CREATE FUNCTION update_vet_modification_time()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.vet_modification_time = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_vet_modification_time_trigger
+BEFORE UPDATE ON vets
+FOR EACH ROW EXECUTE FUNCTION update_vet_modification_time();
 
 CREATE FUNCTION update_dog_modification_time()
 RETURNS TRIGGER AS $$
