@@ -29,7 +29,8 @@ local-destroy:
 
 # Run migrations against the database configured by
 # environments/$(target).sh. A value should be provided for
-# target. E.g. `make target=dev deploy`
+# target. E.g. `make target=dev deploy` (Default is 'dev')
+target=dev
 .PHONY: deploy
 deploy: test
 	bash scripts/deploy.sh environments/$(target).sh
