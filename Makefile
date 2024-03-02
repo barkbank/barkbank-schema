@@ -21,6 +21,15 @@ keep:
 local: test
 	bash scripts/local.sh
 
+# This destroys the local development database. Use it if you want to
+# reset.
+.PHONY: local-destroy
+local-destroy:
+	bash scripts/local-destroy.sh
+
+# Run migrations against the database configured by
+# environments/$(target).sh. A value should be provided for
+# target. E.g. `make target=dev deploy`
 .PHONY: deploy
 deploy: test
 	bash scripts/deploy.sh environments/$(target).sh
