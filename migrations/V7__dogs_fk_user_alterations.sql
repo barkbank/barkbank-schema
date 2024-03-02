@@ -1,0 +1,8 @@
+ALTER TABLE dogs
+ALTER COLUMN user_id DROP NOT NULL;
+
+ALTER TABLE dogs
+DROP CONSTRAINT dogs_fk_users;
+
+ALTER TABLE dogs
+ADD CONSTRAINT dogs_fk_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE SET NULL
