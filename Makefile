@@ -35,6 +35,10 @@ target=dev
 deploy: test
 	bash scripts/deploy.sh environments/$(target).sh
 
+# Run migrations on multiple targets
+.PHONY: deploy-all
+deploy-all: local deploy
+
 # This removes the out/ directory.
 .PHONY: clean
 clean:
