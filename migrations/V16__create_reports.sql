@@ -5,8 +5,6 @@ CREATE TABLE reports (
   report_id BIGSERIAL,
   report_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   report_modification_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vet_id BIGINT NOT NULL,
-  dog_id BIGINT NOT NULL,
   call_id BIGINT NOT NULL,
   visit_time TIMESTAMP WITH TIME ZONE NOT NULL,
   dog_weight_kg REAL NOT NULL,
@@ -16,8 +14,6 @@ CREATE TABLE reports (
   dog_reported_ineligibility t_reported_ineligibility NOT NULL,
   encrypted_ineligibility_reason TEXT NOT NULL,
   ineligibility_expiry_time TIMESTAMP WITH TIME ZONE,
-  CONSTRAINT reports_fk_vets FOREIGN KEY (vet_id) REFERENCES vets (vet_id) ON DELETE RESTRICT,
-  CONSTRAINT reports_fk_dogs FOREIGN KEY (dog_id) REFERENCES dogs (dog_id) ON DELETE RESTRICT,
   CONSTRAINT reports_fk_calls FOREIGN KEY (call_id) REFERENCES calls (call_id) ON DELETE RESTRICT,
   CONSTRAINT reports_pk PRIMARY KEY (report_id)
 );
