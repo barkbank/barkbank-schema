@@ -7,5 +7,7 @@ CREATE TABLE calls (
   dog_id BIGINT NOT NULL,
   call_outcome t_call_outcome NOT NULL,
   encrypted_opt_out_reason TEXT NOT NULL,
+  CONSTRAINT calls_fk_vets FOREIGN KEY (vet_id) REFERENCES vets (vet_id) ON DELETE RESTRICT,
+  CONSTRAINT calls_fk_dogs FOREIGN KEY (dog_id) REFERENCES dogs (dog_id) ON DELETE RESTRICT,
   CONSTRAINT calls_pk PRIMARY KEY (call_id)
 );
