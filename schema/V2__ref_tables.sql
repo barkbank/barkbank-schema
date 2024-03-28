@@ -24,8 +24,6 @@ CREATE TABLE vets (
   CONSTRAINT vet_pk PRIMARY KEY (vet_id)
 );
 
-CREATE TYPE t_residency AS ENUM ('OTHER', 'SINGAPORE');
-
 CREATE TABLE users (
   user_id BIGSERIAL,
   user_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -36,11 +34,6 @@ CREATE TABLE users (
   CONSTRAINT users_unique_user_hashed_email UNIQUE (user_hashed_email),
   CONSTRAINT users_pk PRIMARY KEY (user_id)
 );
-
-CREATE TYPE t_yes_no_unknown AS ENUM ('YES', 'NO', 'UNKNOWN');
-CREATE TYPE t_pos_neg_nil AS ENUM ('POSITIVE', 'NEGATIVE', 'NIL');
-CREATE TYPE t_dog_gender AS ENUM ('MALE', 'FEMALE', 'UNKNOWN');
-CREATE TYPE t_dog_antigen_presence AS ENUM ('POSITIVE', 'NEGATIVE', 'UNKNOWN');
 
 CREATE TABLE dogs (
   dog_id BIGSERIAL,
@@ -96,8 +89,6 @@ CREATE TABLE dog_vet_preferences (
   CONSTRAINT dog_vet_preferences_pk PRIMARY KEY (dog_id, vet_id)
 );
 
-CREATE TYPE t_call_outcome AS ENUM ('APPOINTMENT', 'DECLINED', 'OPT_OUT');
-
 CREATE TABLE calls (
   call_id BIGSERIAL,
   call_creation_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -109,8 +100,6 @@ CREATE TABLE calls (
   CONSTRAINT calls_fk_dogs FOREIGN KEY (dog_id) REFERENCES dogs (dog_id) ON DELETE RESTRICT,
   CONSTRAINT calls_pk PRIMARY KEY (call_id)
 );
-
-CREATE TYPE t_reported_ineligibility AS ENUM ('NIL', 'TEMPORARY_INELIGIBLE', 'PERMANENTLY_INELIGIBLE');
 
 CREATE TABLE reports (
   report_id BIGSERIAL,
@@ -125,70 +114,11 @@ CREATE TABLE reports (
   dog_reported_ineligibility t_reported_ineligibility NOT NULL,
   encrypted_ineligibility_reason TEXT NOT NULL,
   ineligibility_expiry_time TIMESTAMP WITH TIME ZONE,
+  dog_id BIGINT NOT NULL,
+  vet_id BIGINT NOT NULL,
   CONSTRAINT reports_fk_calls FOREIGN KEY (call_id) REFERENCES calls (call_id) ON DELETE RESTRICT,
+  CONSTRAINT reports_fk_dogs FOREIGN KEY (dog_id) REFERENCES dogs (dog_id) ON DELETE RESTRICT,
+  CONSTRAINT reports_fk_vets FOREIGN KEY (vet_id) REFERENCES vets (vet_id) ON DELETE RESTRICT,
+  CONSTRAINT reports_unique_dog_visit_time UNIQUE (dog_id, visit_time),
   CONSTRAINT reports_pk PRIMARY KEY (report_id)
 );
-
-
--- ------------------------------------------------------------
--- # Triggers
-
-CREATE FUNCTION update_admin_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.admin_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_admin_modification_time_trigger
-BEFORE UPDATE ON admins
-FOR EACH ROW EXECUTE FUNCTION update_admin_modification_time();
-
-CREATE FUNCTION update_user_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.user_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_user_modification_time_trigger
-BEFORE UPDATE ON users
-FOR EACH ROW EXECUTE FUNCTION update_user_modification_time();
-
-CREATE FUNCTION update_vet_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.vet_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_vet_modification_time_trigger
-BEFORE UPDATE ON vets
-FOR EACH ROW EXECUTE FUNCTION update_vet_modification_time();
-
-CREATE FUNCTION update_dog_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.dog_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_dog_modification_time_trigger
-BEFORE UPDATE ON dogs
-FOR EACH ROW EXECUTE FUNCTION update_dog_modification_time();
-
-CREATE FUNCTION update_report_modification_time()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.report_modification_time = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_report_modification_time_trigger
-BEFORE UPDATE ON reports
-FOR EACH ROW EXECUTE FUNCTION update_report_modification_time();
