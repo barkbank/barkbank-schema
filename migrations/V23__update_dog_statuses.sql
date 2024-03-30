@@ -1,4 +1,4 @@
-CREATE VIEW dog_statuses AS (
+CREATE OR REPLACE VIEW dog_statuses AS (
     WITH
     mServiceStatuses as (
         SELECT
