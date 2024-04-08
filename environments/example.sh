@@ -1,7 +1,10 @@
-# An "example" environment. These configurations match those in scripts/dev.sh.
+# An "example" environment.
 #
-# Special Notes - The dev db runs in a container and so does Flyway. So we need
-# to use the actual container IP and the actual port number (i.e. 5432).
+# This runs migrations against the pawtaldevdb container that is created by
+# scripts/local.sh.
+#
+# Special Notes - Since both the target database and Flyway run in container,
+# the actual container IP and port values for the database are used.
 #
 theMigrationsDir=migrations
 theDatabaseName=devdb
