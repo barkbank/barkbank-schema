@@ -1,4 +1,4 @@
-CREATE VIEW latest_values AS (
+CREATE OR REPLACE VIEW latest_values AS (
     WITH
     mLatestReports as (
         SELECT
