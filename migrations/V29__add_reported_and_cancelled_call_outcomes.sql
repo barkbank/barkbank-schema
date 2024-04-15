@@ -1,0 +1,2 @@
+ALTER TYPE t_call_outcome ADD VALUE 'REPORTED';
+ALTER TYPE t_call_outcome ADD VALUE 'CANCELLED';
