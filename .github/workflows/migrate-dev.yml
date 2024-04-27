@@ -7,10 +7,10 @@ on:
       - main
       - deploy-dev
 jobs:
-  test-migrations:
+  test:
     uses: ./.github/workflows/test-migrations.yml
-  run-migrations:
-    needs: [test-migrations]
+  migrate:
+    needs: [test]
     uses: ./.github/workflows/run-migrations.yml
     with:
       migrations_dir: migrations
