@@ -1,10 +1,17 @@
 # Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 name: migrate-dev
+run-name: ${{github.actor}} is developing the workfolw for running migrations against the dev database
 on:
   push:
     branches:
       - main
       - deploy-dev
 jobs:
-  call-test-migrations:
+  test-migrations:
     uses: ./.github/workflows/test-migrations.yml
+  run-migrations:
+    needs: [test-migrations]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello
+        run: echo "Hello"
