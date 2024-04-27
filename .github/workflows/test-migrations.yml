@@ -2,6 +2,7 @@ name: test-migrations
 run-name: ${{github.actor}} is testing migrations
 on:
   pull_request:
+  workflow_call:
 jobs:
   get-dumps:
     runs-on: ubuntu-latest
