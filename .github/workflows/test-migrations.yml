@@ -20,13 +20,11 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
-      - name: Update apt
-        run: apt-get update
       - name: Install Postgres Client
-        run: apt-get install -y postgresql-client
+        run: sudo apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
-          apt-get -y install wget
+          sudo apt-get -y install wget
           wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
           ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
       - name: Run Flyway
@@ -57,13 +55,11 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
-      - name: Update apt
-        run: apt-get update
       - name: Install Postgres Client
-        run: apt-get install -y postgresql-client
+        run: sudo apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
-          apt-get -y install wget
+          sudo apt-get -y install wget
           wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
           ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
       - name: Run Flyway
