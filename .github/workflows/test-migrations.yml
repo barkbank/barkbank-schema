@@ -10,6 +10,7 @@ jobs:
       MIGRATIONS_DIR: schema
     services:
       postgres:
+        # 27 Apr 2024 - The ubuntu-latest postgresql-client expects a 14.11 server
         image: postgres:14.11
         env:
           POSTGRES_USER: postgres
@@ -47,6 +48,7 @@ jobs:
       MIGRATIONS_DIR: migrations
     services:
       postgres:
+        # 27 Apr 2024 - The ubuntu-latest postgresql-client expects a 14.11 server
         image: postgres:14.11
         env:
           POSTGRES_USER: postgres
