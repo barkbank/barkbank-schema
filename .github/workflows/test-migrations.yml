@@ -5,8 +5,7 @@ on:
 jobs:
   # TODO: Move this into a template / called workflow?
   dump-schema:
-    # Run on the postgres image for access to pg_dump
-    runs-on: postgres:15.2
+    runs-on: ubuntu:latest
     env:
       MIGRATIONS_DIR: schema
     services:
@@ -21,9 +20,12 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Update apt
+        run: apt-get update
+      - name: Install Postgres Client
+        run: apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
-          apt-get update
           apt-get -y install wget
           wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
           ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
@@ -40,8 +42,7 @@ jobs:
           path: pg_dump_${{env.MIGRATIONS_DIR}}.sql
 
   dump-migrations:
-    # Run on the postgres image for access to pg_dump
-    runs-on: postgres:15.2
+    runs-on: ubuntu:latest
     env:
       MIGRATIONS_DIR: migrations
     services:
@@ -56,9 +57,12 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Update apt
+        run: apt-get update
+      - name: Install Postgres Client
+        run: apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
-          apt-get update
           apt-get -y install wget
           wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
           ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
