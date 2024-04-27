@@ -22,8 +22,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update apt
         run: sudo apt-get update
-      - name: Install Postgres 15
-        run: sudo apt-get install -y postgresql-15
+      - name: Install Postgres Client
+        run: sudo apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
           sudo apt-get -y install wget
@@ -59,8 +59,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update apt
         run: sudo apt-get update
-      - name: Install Postgres 15
-        run: sudo apt-get install -y postgresql-15
+      - name: Install Postgres Client
+        run: sudo apt-get install -y postgresql-client
       - name: Install Flyway
         run: |
           sudo apt-get -y install wget
