@@ -1,0 +1,103 @@
+name: test-migrations
+run-name: ${{github.actor}} is testing migrations
+on:
+  pull_request:
+jobs:
+  # TODO: Move this into a template / called workflow?
+  dump-schema:
+    runs-on: ubuntu-latest
+    env:
+      MIGRATIONS_DIR: schema
+    services:
+      postgres:
+        image: postgres:14.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
+      - name: Install Postgres Client
+        run: sudo apt-get install -y postgresql-client
+      - name: Install Flyway
+        run: |
+          sudo apt-get -y install wget
+          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
+          ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
+      - name: Run Flyway
+        run: flyway -url=jdbc:postgresql://localhost:5432/testdb -locations=${MIGRATIONS_DIR} -user=postgres -password=password -driver=org.postgresql.Driver -encoding=UTF-8 -validateOnMigrate=true -baselineOnMigrate=true -table=schema_history migrate
+      - name: Dump Postgres Database
+        run: PGPASSWORD=password pg_dump -h localhost -U postgres testdb > pg_dump.sql
+      - name: Remove migration related lines
+        run: cat pg_dump.sql | grep -v 'V[0-9.]\{1,\}__' > pg_dump_${MIGRATIONS_DIR}.sql
+      - name: Upload pg_dump_${{env.MIGRATIONS_DIR}}.sql
+        uses: actions/upload-artifact@v4
+        with:
+          name: pg_dump_${{env.MIGRATIONS_DIR}}
+          path: pg_dump_${{env.MIGRATIONS_DIR}}.sql
+
+  dump-migrations:
+    runs-on: ubuntu-latest
+    env:
+      MIGRATIONS_DIR: migrations
+    services:
+      postgres:
+        image: postgres:14.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
+      - name: Install Postgres Client
+        run: sudo apt-get install -y postgresql-client
+      - name: Install Flyway
+        run: |
+          sudo apt-get -y install wget
+          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
+          ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
+      - name: Run Flyway
+        run: flyway -url=jdbc:postgresql://localhost:5432/testdb -locations=${MIGRATIONS_DIR} -user=postgres -password=password -driver=org.postgresql.Driver -encoding=UTF-8 -validateOnMigrate=true -baselineOnMigrate=true -table=schema_history migrate
+      - name: Dump Postgres Database
+        run: PGPASSWORD=password pg_dump -h localhost -U postgres testdb > pg_dump.sql
+      - name: Remove migration related lines
+        run: cat pg_dump.sql | grep -v 'V[0-9.]\{1,\}__' > pg_dump_${MIGRATIONS_DIR}.sql
+      - name: Upload pg_dump_${{env.MIGRATIONS_DIR}}.sql
+        uses: actions/upload-artifact@v4
+        with:
+          name: pg_dump_${{env.MIGRATIONS_DIR}}
+          path: pg_dump_${{env.MIGRATIONS_DIR}}.sql
+
+  compare-dumps:
+    runs-on: ubuntu-latest
+    needs: [dump-schema, dump-migrations]
+    steps:
+      - name: Download schema dump
+        uses: actions/download-artifact@v4
+        with:
+          name: pg_dump_schema
+      - name: Download migrations dump
+        uses: actions/download-artifact@v4
+        with:
+          name: pg_dump_migrations
+      - name: Compare dumps
+        run: diff pg_dump_schema.sql pg_dump_migrations.sql
+
+# ________________________________________
+# REFERENCES
+#
+# Ref1: Flyway - https://documentation.red-gate.com/fd/command-line-184127404.html
+# Ref2: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+# Ref3: Passing params between jobs - https://adamcowley.co.uk/posts/til-github-action-output-parameters/
+# Ref4: Passing files between jobs - https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow
+#
