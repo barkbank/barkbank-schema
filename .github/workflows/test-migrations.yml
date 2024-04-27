@@ -10,7 +10,7 @@ jobs:
       MIGRATIONS_DIR: schema
     services:
       postgres:
-        image: postgres:15.2
+        image: postgres:14.11
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
@@ -47,7 +47,7 @@ jobs:
       MIGRATIONS_DIR: migrations
     services:
       postgres:
-        image: postgres:15.2
+        image: postgres:14.11
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
