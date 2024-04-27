@@ -1,0 +1,10 @@
+# Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+name: migrate-dev
+on:
+  push:
+    branches:
+      - main
+      - deploy-dev
+jobs:
+  call-test-migrations:
+    uses: ./.github/workflows/test-migrations.yml
