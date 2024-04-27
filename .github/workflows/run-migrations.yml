@@ -1,0 +1,40 @@
+# Reusable Workflow
+name: run-migrations
+on:
+  workflow_call:
+    inputs:
+      migrations_dir:
+        required: true
+        type: string
+    secrets:
+      DB_HOST:
+        required: true
+      DB_PORT:
+        required: true
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+      DB_NAME:
+        required: true
+env:
+  DB_HOST: ${{secrets.DB_HOST}}
+  DB_PORT: ${{secrets.DB_PORT}}
+  DB_USER: ${{secrets.DB_USER}}
+  DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+  DB_NAME: ${{secrets.DB_NAME}}
+  MIGRATIONS_DIR: ${{inputs.migrations_dir}}
+jobs:
+  run-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
+      - name: Install Flyway
+        run: |
+          sudo apt-get -y install wget
+          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/10.2.0/flyway-commandline-10.2.0-linux-x64.tar.gz | tar -xvz
+          ln -s $(pwd)/flyway-10.2.0/flyway /usr/local/bin
+      - name: Run Flyway
+        run: flyway -url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME} -locations=${MIGRATIONS_DIR} -user=${DB_USER} -password=${DB_PASSWORD} migrate
