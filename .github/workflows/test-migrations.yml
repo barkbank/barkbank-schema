@@ -20,6 +20,8 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
       - name: Install Postgres 15
         run: sudo apt-get install -y postgresql-15
       - name: Install Flyway
@@ -55,6 +57,8 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
       - name: Install Postgres 15
         run: sudo apt-get install -y postgresql-15
       - name: Install Flyway
