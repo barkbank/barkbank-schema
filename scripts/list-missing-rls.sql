@@ -15,4 +15,5 @@ AND (
     OR cls.relname IN (SELECT viewname FROM pg_views)
 )
 AND cls.relrowsecurity = false
+AND cls.relname <> 'flyway_schema_history'
 ORDER BY namespace, rel_type, rel_name
