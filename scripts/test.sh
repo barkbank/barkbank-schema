@@ -35,6 +35,7 @@ function startDatabaseTestContainer {
         -e POSTGRES_PASSWORD=${mDatabasePassword} \
         -p ${mHostPort}:5432 \
         -v ${mDockerVolumeName}:/var/lib/postgresql/data \
+        -v $(pwd)/scripts:/scripts \
         -d \
         ${mPostgresDockerImage}
 
@@ -87,6 +88,23 @@ function collectPgDump {
         -d ${theDatabaseName} > ./out/${theDatabaseName}-pgdump.sql
 }
 
+function ensureRlsEnabled {
+    local theDatabaseName=$1
+    local outFile="./out/${theDatabaseName}-missing-rls.txt"
+    mkdir -p out
+    docker exec -t ${mDockerContainerName} psql \
+        -U postgres \
+        -d ${theDatabaseName} \
+        -f /scripts/list-missing-rls.sql > ${outFile}
+    if grep -q "(0 rows)" ${outFile}; then
+        echo "All tables and views have RLS enabled."
+    else
+        echo "There are tables or views without RLS enabled. Please review ${outFile}."
+        cat ${outFile}
+        exit 1
+    fi
+}
+
 # Prepares a ./out/${1}db-dump.sql file containing the pg_dump output from a
 # database with $1 migrations minus the lines containing Flyway migration
 # records—e.g. V1__reference_schema
@@ -97,6 +115,7 @@ function getDump {
     runFlyway $theDirectory $xDBName
     collectPgDump $xDBName
     cat ./out/${xDBName}-pgdump.sql | grep -v "V.*__.*sql" > ./out/${xDBName}-dump.sql
+    ensureRlsEnabled $xDBName
 }
 
 # This will output "true" or "false"
