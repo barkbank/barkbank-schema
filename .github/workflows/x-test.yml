@@ -13,7 +13,8 @@ jobs:
     services:
       postgres:
         # 27 Apr 2024 - The ubuntu-latest postgresql-client expects a 14.11 server
-        image: postgres:14.11
+        # image: postgres:14.11
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
