@@ -47,12 +47,12 @@ jobs:
         run: PGPASSWORD=password psql -h localhost -U postgres -d testdb -f scripts/list-missing-rls.sql -o rls_missing.txt
       - name: Assert that rls_missing.txt is empty
         run: |
-          if [ -s rls_missing.txt ]; then
+          if grep -q "(0 rows)" rls_missing.txt; then
+            echo "All tables and views have RLS enabled. The file is empty."
+          else
             echo "There are tables or views without RLS enabled. Please review rls_missing.txt."
             cat rls_missing.txt
             exit 1
-          else
-            echo "All tables and views have RLS enabled. The file is empty."
           fi
   compare-dumps:
     runs-on: ubuntu-latest
