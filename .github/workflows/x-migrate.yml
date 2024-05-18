@@ -1,6 +1,6 @@
 # Reusable Workflow
 # Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
-name: run-migrations
+name: x-migrate
 on:
   workflow_call:
     inputs:
