@@ -43,7 +43,17 @@ jobs:
         with:
           name: pg_dump_${{env.MIGRATIONS_DIR}}
           path: pg_dump_${{env.MIGRATIONS_DIR}}.sql
-
+      - name: List tables and views without RLS enabled
+        run: PGPASSWORD=password psql -h localhost -U postgres -d testdb -f scripts/list-missing-rls.sql -o rls_missing.txt
+      - name: Assert that rls_missing.txt is empty
+        run: |
+          if [ -s rls_missing.txt ]; then
+            echo "There are tables or views without RLS enabled. Please review rls_missing.txt."
+            cat rls_missing.txt
+            exit 1
+          else
+            echo "All tables and views have RLS enabled. The file is empty."
+          fi
   compare-dumps:
     runs-on: ubuntu-latest
     needs: [get-dumps]
