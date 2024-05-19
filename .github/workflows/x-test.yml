@@ -69,8 +69,7 @@ jobs:
               -U postgres \
               -d testdb \
               > pg_dump.sql
-          cat pg_dump.sql | grep -v 'V[0-9.]\{1,\}__' > pg_dump_${MIGRATIONS_DIR}.sql
-
+          cat pg_dump.sql | grep -v 'V.*__.*sql' > pg_dump_${MIGRATIONS_DIR}.sql
       - name: Upload pg_dump_${{env.MIGRATIONS_DIR}}.sql
         uses: actions/upload-artifact@v4
         with:
