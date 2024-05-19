@@ -35,16 +35,17 @@ jobs:
           sleep 3
 
       - name: Run Flyway
-        run: flyway \
-          -url=jdbc:postgresql://localhost:5432/testdb \
-          -locations=${MIGRATIONS_DIR} \
-          -user=postgres \
-          -password=password \
-          -driver=org.postgresql.Driver \
-          -encoding=UTF-8 \
-          -validateOnMigrate=true \
-          -baselineOnMigrate=true \
-          migrate
+        run: |
+          flyway \
+            -url=jdbc:postgresql://localhost:5432/testdb \
+            -locations=${MIGRATIONS_DIR} \
+            -user=postgres \
+            -password=password \
+            -driver=org.postgresql.Driver \
+            -encoding=UTF-8 \
+            -validateOnMigrate=true \
+            -baselineOnMigrate=true \
+            migrate
 
       - name: Verify RLS is enabled
         run: |
