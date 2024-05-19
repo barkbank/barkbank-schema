@@ -12,10 +12,9 @@ jobs:
       MIGRATIONS_DIR: ${{matrix.migrations_dir}}
     steps:
       - uses: actions/checkout@v4
-      - name: Update apt
-        run: sudo apt-get update
-      - name: Install Docker
-        run: sudo apt-get install -y docker.io
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
       - name: Install Flyway
         run: |
