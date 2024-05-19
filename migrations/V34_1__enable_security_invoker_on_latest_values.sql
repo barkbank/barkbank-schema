@@ -1,4 +1,4 @@
-CREATE VIEW latest_values
+CREATE OR REPLACE VIEW latest_values
 WITH (security_invoker=on)
 AS (
     WITH

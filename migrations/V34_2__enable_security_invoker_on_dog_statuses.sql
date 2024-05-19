@@ -1,4 +1,4 @@
-CREATE VIEW dog_statuses
+CREATE OR REPLACE VIEW dog_statuses
 WITH (security_invoker=on)
 AS (
     WITH

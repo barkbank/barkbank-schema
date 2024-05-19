@@ -1,0 +1,7 @@
+name: on-pull-request
+run-name: ${{github.actor}} is testing
+on:
+  pull_request:
+jobs:
+  test:
+    uses: ./.github/workflows/x-test.yml

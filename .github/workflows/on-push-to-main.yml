@@ -1,16 +1,16 @@
 # Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
-name: migrate-dev
-run-name: ${{github.actor}} is pushing migrations to dev
+name: on-push-to-main
+run-name: ${{github.actor}} is deploying migrations to dev database
 on:
   push:
     branches:
       - main
 jobs:
   test:
-    uses: ./.github/workflows/test-migrations.yml
+    uses: ./.github/workflows/x-test.yml
   migrate:
     needs: [test]
-    uses: ./.github/workflows/run-migrations.yml
+    uses: ./.github/workflows/x-migrate.yml
     with:
       migrations_dir: migrations
     secrets:
