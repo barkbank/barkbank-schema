@@ -43,7 +43,8 @@ jobs:
               -U postgres \
               -d testdb \
               -f /scripts/list-missing-rls.sql \
-              > rls_missing.txt
+              -o /tmp/rls_missing.txt
+          docker cp test_container:/tmp/rls_missing.txt rls_missing.txt
           if grep -q "(0 rows)" rls_missing.txt; then
             echo "All tables and views have RLS enabled."
           else
