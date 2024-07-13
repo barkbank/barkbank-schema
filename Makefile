@@ -1,6 +1,10 @@
 .PHONY: default
 default: test
 
+.PHONY: ticket
+ticket:
+	@bash scripts/make-ticket.sh
+
 # This runs the Flyway migrations in schema/ (the reference) and the migrations
 # in migrations/ and then does a pgdump to see if they agree. The dumps will be
 # available in the out/ directory.
