@@ -1,4 +1,4 @@
-CREATE VIEW view_pawtal_events
+CREATE OR REPLACE VIEW view_pawtal_events
 WITH (security_invoker=on)
 AS
 SELECT
