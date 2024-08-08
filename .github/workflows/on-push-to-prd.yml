@@ -1,0 +1,21 @@
+# Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+name: on-push-to-prd
+run-name: ${{github.actor}} is deploying migrations to prd database
+on:
+  push:
+    branches:
+      - prd
+jobs:
+  test:
+    uses: ./.github/workflows/x-test.yml
+  migrate:
+    needs: [test]
+    uses: ./.github/workflows/x-migrate.yml
+    with:
+      migrations_dir: migrations
+    secrets:
+      DB_HOST: ${{secrets.PRD_DB_HOST}}
+      DB_PORT: ${{secrets.PRD_DB_PORT}}
+      DB_USER: ${{secrets.PRD_DB_USER}}
+      DB_PASSWORD: ${{secrets.PRD_DB_PASSWORD}}
+      DB_NAME: ${{secrets.PRD_DB_NAME}}
