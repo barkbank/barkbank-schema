@@ -1,5 +1,5 @@
 ALTER TABLE pawtal_events
-ADD COLUMN x_query_string TEXT NOT NULL DEFAULT '';
+ADD COLUMN x_query_string TEXT DEFAULT NULL;
 
 -- (1) It is necessary to recreate view_pawtal_events to include the new column.
 -- This is because the `*` expression is resolved and at the time the CREATE
