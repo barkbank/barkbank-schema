@@ -1,10 +1,10 @@
 # Ref1: https://docs.github.com/en/actions/using-workflows/reusing-workflows
-name: on-push-to-main
+name: on-push-to-dev
 run-name: ${{github.actor}} is deploying migrations to dev database
 on:
   push:
     branches:
-      - main
+      - dev
 jobs:
   test:
     uses: ./.github/workflows/x-test.yml
